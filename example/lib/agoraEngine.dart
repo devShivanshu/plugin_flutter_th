@@ -138,6 +138,9 @@ class _CallPageState extends State<CallPage> {
   Widget _videoView(view) {
     return Expanded(child: Container(child: view));
   }
+  Widget _videoView2(view) {
+    return Container(child: view);
+  }
 
   /// Video view row wrapper
   Widget _expandedVideoRow(List<Widget> views) {
@@ -160,9 +163,9 @@ class _CallPageState extends State<CallPage> {
             ));
       case 2:
         return Container(
-            child: Stack(
+          child: Stack(
               children: <Widget>[
-                _expandedVideoRow([views[1]]),
+                _videoView2(views[1]),
                 Padding(
                   padding: const EdgeInsets.all(24.0),
                   child: Align(
@@ -170,7 +173,8 @@ class _CallPageState extends State<CallPage> {
                       child: customerView(views[0])),
                 ),
               ],
-            ));
+          ),
+        );
       case 3:
         return Container(
             child: Column(
@@ -201,7 +205,7 @@ class _CallPageState extends State<CallPage> {
       alignment: Alignment.bottomCenter,
       width: 170,
       height: 170,
-      child: _videoView(view),
+      child: _videoView2(view),
     );
   }
   Widget _toolbar() {
