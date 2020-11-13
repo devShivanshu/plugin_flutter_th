@@ -70,7 +70,7 @@ class _CallPageState extends State<CallPage> {
     configuration.dimensions = VideoDimensions(1920, 1080);
     await _engine.setVideoEncoderConfiguration(configuration);
 
-    await _engine.joinChannel(Token, 'shi_123', null, 0);
+    await _engine.joinChannel(Token, channel, null, 0);
   }
 
   /// Create agora sdk instance and initialize
@@ -358,7 +358,7 @@ class _CallPageState extends State<CallPage> {
        FlutterShare.share(
         title: 'Video Call Invite',
         text:
-        'Hey There, Lets Connect via Video call in App using code : ' + 'https://vc-poc.web.app/shi_123',
+        'Hey There, Lets Connect via Video call in App using code : ' + 'https://vc-poc.web.app/$channel',
       );
   }
 
