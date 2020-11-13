@@ -14,7 +14,10 @@ class CallPage extends StatefulWidget {
   /// non-modifiable channel name of the page
 
   /// Creates a call page with given channel name.
-  const CallPage({Key key}) : super(key: key);
+  final String token;
+  final String channelName;
+
+  const CallPage({Key key, this.token, this.channelName}) : super(key: key);
 
   @override
   _CallPageState createState() => _CallPageState();
@@ -26,11 +29,6 @@ class _CallPageState extends State<CallPage> {
   bool muted = false;
   bool screenShared = false;
   RtcEngine _engine;
-  final _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-  String channelName;
-  Random _rnd = Random();
-  String token;
-
 
   @override
   void dispose() {
@@ -63,14 +61,12 @@ class _CallPageState extends State<CallPage> {
     }
 
     await _initAgoraRtcEngine();
-    channelName = getRandomString(7);
     _addAgoraEventHandlers();
     await _engine.enableWebSdkInteroperability(true);
     VideoEncoderConfiguration configuration = VideoEncoderConfiguration();
     configuration.dimensions = VideoDimensions(1920, 1080);
     await _engine.setVideoEncoderConfiguration(configuration);
-
-    await _engine.joinChannel(Token, channel, null, 0);
+    await _engine.joinChannel(widget.token, widget.channelName, null, 0);
   }
 
   /// Create agora sdk instance and initialize
@@ -82,10 +78,6 @@ class _CallPageState extends State<CallPage> {
 
   }
 
-
-
-  String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
-      length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
   /// Add agora event handlers
   void _addAgoraEventHandlers() {
@@ -358,7 +350,7 @@ class _CallPageState extends State<CallPage> {
        FlutterShare.share(
         title: 'Video Call Invite',
         text:
-        'Hey There, Lets Connect via Video call in App using code : ' + 'https://vc-poc.web.app/$channel',
+        'Hey There, Lets Connect via Video call in App using code : ' + 'https://vc-poc.web.app/${widget.channelName}/${Uri.encodeComponent(widget.token)}',
       );
   }
 
@@ -373,7 +365,6 @@ class _CallPageState extends State<CallPage> {
         child: Stack(
           children: <Widget>[
             _viewRows(),
-            //_panel(),
             _toolbar(),
           ],
         ),

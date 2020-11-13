@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 //import 'package:flutter_video_call/flutter_video_call.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:plugin_flutter_th/plugin_flutter_th.dart';
+import 'package:plugin_flutter_th_example/settings.dart';
 
 import 'agoraEngine.dart';
 
@@ -15,14 +17,17 @@ class IndexPage extends StatefulWidget {
 
 class IndexState extends State<IndexPage> {
   /// create a channelController to retrieve text value
-
+  String channelName;
+  Random _rnd = Random();
+  final _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
   @override
   void dispose() {
     // dispose input controller
 
     super.dispose();
   }
-
+  String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+      length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,15 +40,13 @@ class IndexState extends State<IndexPage> {
           height: 400,
           child: Column(
             children: <Widget>[
-
-
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Row(
                   children: <Widget>[
                     Expanded(
                       child: RaisedButton(
-                        onPressed: onJoin,
+                        onPressed: generateTokenAndJoin,
                         child: Text('Join'),
                         color: Colors.blueAccent,
                         textColor: Colors.white,
@@ -59,20 +62,21 @@ class IndexState extends State<IndexPage> {
     );
   }
 
-  Future<void> onJoin() async {
-    // update input validation
-      // await for camera and mic permissions before pushing video page
-      await _handleCameraAndMic();
-      // push video page with given channel name
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CallPage(
-
-          ),
-        ),
-      );
-
+  Future<String> generateTokenAndJoin() async {
+    String token = "";
+    String randomChannel =  getRandomString(5);
+    token =  await PluginFlutterTh.generateToken(APP_ID, certificate,randomChannel, 0);
+    await _handleCameraAndMic();
+    // push video page with given channel name
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CallPage(
+          token: token, channelName:randomChannel
+         ),
+      ),
+    );
+    return token;
   }
 
   onShareScreen()async  {

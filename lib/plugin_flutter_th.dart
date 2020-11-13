@@ -16,4 +16,8 @@ class PluginFlutterTh {
     await _channel.invokeMethod('switchOffScreenShare');
 
   }
+  static Future<String> generateToken(String appId, String appCertificate,String channelName, int uid) async {
+    return await _channel.invokeMethod('generateToken',{"appId": appId,"appCertificate" : appCertificate,"channelName" : channelName, "uid" :uid});
+
+  }
 }
